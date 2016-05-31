@@ -390,7 +390,18 @@ public abstract class ImageViewTouchBase extends ImageView implements IDisposabl
         @Override
         public void getOutline(View view, Outline outline) {
             Rect outlineRect = new Rect();
+            Rect viewPortRect = new Rect();
             getBitmapRect().round(outlineRect);
+            mViewPort.round(viewPortRect);
+            if (outlineRect.top - viewPortRect.top < 1)
+                viewPortRect.top += 10;
+            if (outlineRect.left - viewPortRect.left < 1)
+                viewPortRect.left += 10;
+            if (outlineRect.right - viewPortRect.right > 1)
+                viewPortRect.right -= 10;
+            if (outlineRect.bottom - viewPortRect.bottom > 1)
+                viewPortRect.bottom -= 10;
+            outlineRect.intersect(viewPortRect);
             outline.setRect(outlineRect);
         }
     }

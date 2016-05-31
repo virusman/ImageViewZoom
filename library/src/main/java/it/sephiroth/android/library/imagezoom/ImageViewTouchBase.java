@@ -4,19 +4,27 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Outline;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewOutlineProvider;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+
+import java.lang.annotation.Target;
 
 import it.sephiroth.android.library.imagezoom.graphics.FastBitmapDrawable;
 import it.sephiroth.android.library.imagezoom.utils.IDisposable;
@@ -135,6 +143,9 @@ public abstract class ImageViewTouchBase extends ImageView implements IDisposabl
         mMaxFlingVelocity = configuration.getScaledMaximumFlingVelocity();
         mDefaultAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
         setScaleType(ScaleType.MATRIX);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setOutlineProvider(new CustomOutline());
+        }
     }
 
     /**
@@ -371,6 +382,24 @@ public abstract class ImageViewTouchBase extends ImageView implements IDisposabl
         if (DEBUG) {
             Log.v(TAG, "mUserScaled: " + mUserScaled);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private class CustomOutline extends ViewOutlineProvider {
+
+        @Override
+        public void getOutline(View view, Outline outline) {
+            Rect outlineRect = new Rect();
+            getBitmapRect().round(outlineRect);
+            outline.setRect(outlineRect);
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            invalidateOutline();
     }
 
     /**

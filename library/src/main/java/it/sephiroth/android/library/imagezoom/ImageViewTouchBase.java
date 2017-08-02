@@ -363,6 +363,9 @@ public abstract class ImageViewTouchBase extends ImageView implements IDisposabl
                 mScaleTypeChanged = false;
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            invalidateOutline();
     }
 
     @Override

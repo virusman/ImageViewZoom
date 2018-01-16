@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewOutlineProvider;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
@@ -1036,7 +1037,7 @@ public abstract class ImageViewTouchBase extends ImageView implements IDisposabl
 
         ValueAnimator animation = ValueAnimator.ofFloat(oldScale, finalScale);
         animation.setDuration(durationMs);
-        animation.setInterpolator(new DecelerateInterpolator(1.0f));
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
         animation.addUpdateListener(
                 new ValueAnimator.AnimatorUpdateListener() {
                     @Override
